@@ -25,9 +25,15 @@ jobs:
         run: npm ci
 
       - name: Build project
-        run: npm run build || echo "Build finished with errors, continuing deployment"
+        run: |
+          npm run build
+          if [ ! -d "dist" ] || [ -z "$(ls -A dist)" ]; then
+            echo "⚠️ Build failed or dist/ directory is empty. Skipping deployment."
+            exit 1
+          fi
 
       - name: Deploy to server
+        if: success()
         env:
           HOST: ${{ secrets.HOST }}
           USER: ${{ secrets.USER }}
@@ -35,6 +41,7 @@ jobs:
         run: |
           echo "$SSH_KEY" > private_key.pem
           chmod 600 private_key.pem
-          scp -i private_key.pem -r dist/* $USER@$HOST:/var/www/appGrantt
+          scp -i private_key.pem -r dist/* $USER@$HOST:/var/www/appGrantt/dist
           ssh -i private_key.pem $USER@$HOST "sudo systemctl restart nginx"
           rm private_key.pem
+
