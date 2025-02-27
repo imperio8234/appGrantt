@@ -116,6 +116,16 @@ export default class Gantt extends Component<GanttProps> {
             this.dataProcessor.destructor();
             this.dataProcessor = null;
         }
+    
+        if (!this.ganttContainer) {
+            this.ganttContainer.innerHTML = ''; // Limpiar el contenido del contenedor
+        }
+    
+        // Desvincular eventos de Gantt si es necesario
+        gantt.detachAllEvents();
+    
+        // Limpiar el estado interno de Gantt
+        gantt.clearAll();
     }
 
     render() {
