@@ -56,10 +56,10 @@ export class TaskServices {
    */ 
    async deleteTask (id: string) {
         try {
-            const res = await backApi.post(`/task/${id}`);
+            const res = await backApi.delete(`/tasks/${id}`);
             return res.data;
           } catch (error) {
-            console.error('Error during createVenta', error);
+            console.error('Error during delete task', error);
             throw error;
           }
 

@@ -1,5 +1,5 @@
 import { backApi } from "../util/config-api";
-import { TaskSave } from "../util/types";
+import { LinkData, TaskSave } from "../util/types";
 
 export class LinkServices {
 
@@ -21,12 +21,13 @@ export class LinkServices {
 
     /**
    * actualiza la tarea con nuevos valores.
+   * @param id - identificacion.
    * @param data - nuevos datos.
    * @returns Respuesta del backend con actualizada.
    */
-   async updatelink(data: TaskSave) {
+   async updatelink(id: number, data: LinkData) {
         try {
-            const res = await backApi.put('/link', data);
+            const res = await backApi.put(`/link/${id}`, data);
             return res.data;
           } catch (error) {
             console.error('Error during updating', error);
@@ -55,7 +56,7 @@ export class LinkServices {
    */ 
    async deleteLink (id: string) {
         try {
-            const res = await backApi.post(`/link/${id}`);
+            const res = await backApi.delete(`/link/${id}`);
             return res.data;
           } catch (error) {
             console.error('Error delete link', error);

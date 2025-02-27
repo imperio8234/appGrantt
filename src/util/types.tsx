@@ -3,7 +3,6 @@ export interface LinkData {
     source: string;
     target: string;
     type: string;
-    nativeeditor_status: string;
   }
 export interface Task {
     entityType: "task" | "link";
@@ -19,9 +18,7 @@ export interface TaskSave {
         duration: number;
         progress: number;
         end_date?: string;
-        parent?: number;
-        nativeeditor_status?: string;
-    
+        parent?: number;    
 }
 
 

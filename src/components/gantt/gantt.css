@@ -1,3 +1,22 @@
 html, body #root, #root div:only-child, .gantt-container{
     height: 100%;
 }
+
+
+.gantt_task_line {
+    background-color: #4CAF50 !important;
+    border-radius: 8px;
+    
+  }
+  
+  .gantt_task_progress {
+    background-color: #2196F3 !important;
+    opacity: 0.8;
+  }
+  
+  
+  .gantt_link_line {
+    stroke: #FF5722 !important;
+    stroke-width: 2px !important;
+  }
+  
