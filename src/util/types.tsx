@@ -1,27 +1,44 @@
-export interface LinkData {
-    id: number;
-    source: string;
-    target: string;
-    type: string;
-  }
+
 export interface Task {
     entityType: "task" | "link";
     action: "create" | "update" | "delete";
     id: string | number;
     item?: TaskData | LinkData
 }
+
+
+
+export interface LinkData {
+  id:  string |number;
+  source?: string;
+  target?: string;
+  type?: string;
+}
+
 export interface TaskSave {
-    
-        id: string | number;
-        text: string;
-        start_date: string;
-        duration: number;
-        progress: number;
-        end_date?: string;
-        parent?: number;    
+  data: Task[];
+  links: LinkData[];
 }
 
 
+export interface UserResponse {
+  name: string;
+  token: string;
+  idUser: string;
+}
+
+export interface user {
+  name: string;
+  password: string;
+}
+
+
+export interface taskgantt {
+  id: string;
+  action: string;
+  entityType:string;
+  item:TaskData;
+}
 export interface TaskData {
   nativeeditor_status: string;
   $calculate_duration: boolean;
@@ -46,15 +63,17 @@ export interface TaskData {
   progress: number;
   start_date: Date;
   text: string;
-}
+  source?: string;
+  target?:string;
+  type?: string;
 
-export interface UserResponse {
-  name: string;
-  token: string;
-  idUser: string;
-}
-
-export interface user {
-  name: string;
-  password: string;
+  user?: {
+    idUser?: string;
+  };
+  tasks?: {
+    id?: string | number;
+  };
+  tasks2?: {
+    id?: string | number;
+  };
 }

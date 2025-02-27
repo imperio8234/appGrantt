@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { zoomType } from '../../App';
+import { zoomType } from '../ganttApp';
+
 
 interface ToolbarProps {
     zoom: zoomType;
