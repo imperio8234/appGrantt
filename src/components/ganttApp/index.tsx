@@ -26,31 +26,39 @@ function GanttApp() {
     });
 
     // notificaciones
-    const {notify, contextHolder} = useNotification();
+    const { notify, contextHolder } = useNotification();
 
     // importacion de servicios
     const serviceTasks = new TaskServices();
     const serviceLinks = new LinkServices();
-    const {user, logged} =useUser();
- console.log(user)
-    const getTasks = async() => {
+    const { user, logged } = useUser();
+
+    useEffect(() => {
+        if (!user?.token) {
+          setTasksItems({links: [], data: []})
+          return;        
+      }
+    }, [user])
+
+
+    const getTasks = async () => {
         setLoading(true);
         try {
 
-            const links = await serviceLinks.getLink();
-            const tasks = await serviceTasks.getTask();
-            
-            setTasksItems({data: tasks.data, links:links.data})
+            const links = await serviceLinks.getLink(user?.idUser);
+            const tasks = await serviceTasks.getTask(user?.idUser);
+
+
+            setTasksItems({ data: tasks.data, links: links.data })
             setLoading(false)
         } catch (error) {
             console.log(error)
             setLoading(false);
         }
     }
-   
+
     useEffect(() => {
         getTasks()
-
     }, [])
 
     const handleZoomChange = (zoom: zoomType) => {
@@ -65,15 +73,17 @@ function GanttApp() {
             });
 
             // save database
-             try {
+            currentTask.item.user = {
+                idUser: user?.idUser
+            }
+            try {
                 const res = await serviceTasks.createTask(currentTask.item)
                 notify("tarea generada", "success")
-                console.log("se guardaron los datos", res)
-             } catch (error) {
+            } catch (error) {
                 console.log(error)
-                
-             }
-             // update database
+
+            }
+            // update database
         } else if (currentTask.action === "update" && currentTask.entityType === "task") {
             const updatedData = tasksItems.data.map(task =>
                 task.id === currentTask.item?.id ? (currentTask.item as TaskSave) : task
@@ -85,12 +95,11 @@ function GanttApp() {
             });
 
             // update task database
-               try {
+            try {
                 const res = await serviceTasks.updateTask(currentTask.id, currentTask.item)
-                console.log("task update", res)
-               } catch (error) {
-                 console.log(error)
-               }
+            } catch (error) {
+                console.log(error)
+            }
             // delete database
         } else if (currentTask.action === "delete" && currentTask.entityType === "task") {
             const filteredData = tasksItems.data.filter(task => task.id !== currentTask.item?.id);
@@ -98,10 +107,11 @@ function GanttApp() {
                 ...tasksItems,
                 data: filteredData
             });
-             notify("Datos eliminados", "info")
+
+            
             try {
                 const res = await serviceTasks.deleteTask(currentTask.id)
-                console.log("task delete", res)
+                notify("Datos eliminados", "info")
             } catch (error) {
                 console.log(error)
             }
@@ -111,11 +121,21 @@ function GanttApp() {
                 ...tasksItems,
                 links: [...tasksItems.links, currentTask.item as LinkData]
             });
-             console.log("llego el link", currentTask)
-             // save database
+            // save database
+            currentTask.item.user = {
+                idUser: user?.idUser
+            }
+
+            currentTask.item.tasks = {
+                id: currentTask?.item.source
+            }
+            currentTask.item.tasks2 = {
+                id: currentTask?.item.target
+            }
+
+            
             try {
                 const res = await serviceLinks.createLink(currentTask.item)
-                console.log("link creado", res)
             } catch (error) {
                 console.log(error)
             }
@@ -134,7 +154,6 @@ function GanttApp() {
             // update link database
             try {
                 const res = await serviceLinks.updatelink(currentTask.id, currentTask.item)
-                console.log("link update", res)
             } catch (error) {
                 console.log(error)
             }
@@ -148,21 +167,20 @@ function GanttApp() {
             // delete link tatabase
             try {
                 const res = await serviceLinks.deleteLink(currentTask.id)
-                console.log("link delete", res)
             } catch (error) {
-             console.log(error)   
+                console.log(error)
             }
         }
     };
 
     if (loading) {
-        return  <Spin indicator={<LoadingOutlined spin />} size="large" />
+        return <Spin indicator={<LoadingOutlined spin />} size="large" />
     }
-    
+
     return (
         <>
-        {contextHolder}
-                <LayoutGrantt />
+            {contextHolder}
+            <LayoutGrantt />
             <div className="zoom-bar">
                 <Toolbar
                     zoom={stateZoom}

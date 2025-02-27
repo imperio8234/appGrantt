@@ -37,11 +37,12 @@ export class TaskServices {
 
     /**
    * optener las tareas.
+   * @param id identificador del usuario 
    * @returns Respuesta del backend con las tareas.
    */ 
-   async getTask () {
+   async getTask (id?: string) {
         try {
-            const res = await backApi.get(`/tasks`);
+            const res = await backApi.get(`/tasks/${id}`);
             return res.data;
           } catch (error) {
             console.error('Error geting task', error);

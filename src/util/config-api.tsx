@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+
 const BACK_URL = "http://localhost:3000/api";
 
 export const backApi = axios.create({
@@ -8,3 +9,15 @@ export const backApi = axios.create({
       "Content-Type": "application/json",
     },
   });
+
+
+  backApi.interceptors.request.use(
+    (config) => {
+      const token = localStorage.getItem('token'); 
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
+    },
+    (error) => Promise.reject(error)
+  );
