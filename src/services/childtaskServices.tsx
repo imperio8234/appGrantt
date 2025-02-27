@@ -39,7 +39,7 @@ export class childTaskServices {
    * @param id - Datos de la tarea.
    * @returns Respuesta del backend con las tareas.
    */ 
-   async getchildTask () {
+   async getchildTask (id?: string) {
         try {
             const res = await backApi.get(`/childTask/${id}`);
             return res.data;

@@ -1,5 +1,4 @@
 import { message } from 'antd';
-import { useState } from 'react';
 
 type NoticeType = 'info' | 'success' | 'error' | 'warning' | 'loading';
 

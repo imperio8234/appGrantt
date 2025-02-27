@@ -1,5 +1,5 @@
 import { backApi } from "../util/config-api";
-import { TaskData, TaskSave } from "../util/types";
+import { TaskData } from "../util/types";
 
 export class TaskServices {
 
@@ -25,7 +25,7 @@ export class TaskServices {
    * @param data - nuevos datos.
    * @returns Respuesta del backend con actualizada.
    */
-   async updateTask(id: string ,data: TaskSave) {
+   async updateTask(id: string ,data: TaskData) {
         try {
             const res = await backApi.put(`/tasks/${id}`, data);
             return res.data;

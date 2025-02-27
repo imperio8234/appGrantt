@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
-import { LinkData, Task, TaskSave } from '../../util/types';
+import { LinkData, TaskData, taskgantt} from '../../util/types';
 import Gantt from '../gantt/gantt';
 import Toolbar from '../gantt/Toolbar';
 import { TaskServices } from '../../services/taskServices';
 import { LinkServices } from '../../services/linkServices';
 import { LoadingOutlined } from '@ant-design/icons';
-import { Flex, Spin } from 'antd';
+import {  Spin } from 'antd';
 import useNotification from '../../util/notify';
 import { useUser } from '../../provider/userContex';
 import LayoutGrantt from './components/layout';
@@ -18,7 +18,7 @@ function GanttApp() {
     const [stateZoom, setStateZoom] = useState<zoomType>("Days");
     const [loading, setLoading] = useState<boolean>(true);
     const [tasksItems, setTasksItems] = useState<{
-        data: TaskSave[],
+        data: TaskData[],
         links: LinkData[];
     }>({
         data: [],
@@ -31,7 +31,7 @@ function GanttApp() {
     // importacion de servicios
     const serviceTasks = new TaskServices();
     const serviceLinks = new LinkServices();
-    const { user, logged } = useUser();
+    const { user } = useUser();
 
     useEffect(() => {
         if (!user?.token) {
@@ -65,11 +65,11 @@ function GanttApp() {
         setStateZoom(zoom);
     }
 
-    const setCurrentTask = async (currentTask: any) => {
+    const setCurrentTask = async (currentTask: taskgantt) => {
         if (currentTask.action === "create" && currentTask.entityType === "task") {
             setTasksItems({
                 ...tasksItems,
-                data: [...tasksItems.data, currentTask.item as TaskSave]
+                data: [...tasksItems.data, currentTask.item ]
             });
 
             // save database
@@ -77,7 +77,7 @@ function GanttApp() {
                 idUser: user?.idUser
             }
             try {
-                const res = await serviceTasks.createTask(currentTask.item)
+                await serviceTasks.createTask(currentTask.item)
                 notify("tarea generada", "success")
             } catch (error) {
                 console.log(error)
@@ -86,7 +86,7 @@ function GanttApp() {
             // update database
         } else if (currentTask.action === "update" && currentTask.entityType === "task") {
             const updatedData = tasksItems.data.map(task =>
-                task.id === currentTask.item?.id ? (currentTask.item as TaskSave) : task
+                task.id === currentTask.item?.id ? (currentTask.item) : task
             );
 
             setTasksItems({
@@ -96,7 +96,7 @@ function GanttApp() {
 
             // update task database
             try {
-                const res = await serviceTasks.updateTask(currentTask.id, currentTask.item)
+                await serviceTasks.updateTask(currentTask.id, currentTask.item)
             } catch (error) {
                 console.log(error)
             }
@@ -110,7 +110,7 @@ function GanttApp() {
 
             
             try {
-                const res = await serviceTasks.deleteTask(currentTask.id)
+                await serviceTasks.deleteTask(currentTask.id)
                 notify("Datos eliminados", "info")
             } catch (error) {
                 console.log(error)
@@ -135,7 +135,7 @@ function GanttApp() {
 
             
             try {
-                const res = await serviceLinks.createLink(currentTask.item)
+                await serviceLinks.createLink(currentTask.item)
             } catch (error) {
                 console.log(error)
             }
@@ -153,7 +153,7 @@ function GanttApp() {
 
             // update link database
             try {
-                const res = await serviceLinks.updatelink(currentTask.id, currentTask.item)
+                 await serviceLinks.updatelink(parseInt(currentTask.id), currentTask.item)
             } catch (error) {
                 console.log(error)
             }
@@ -166,7 +166,7 @@ function GanttApp() {
 
             // delete link tatabase
             try {
-                const res = await serviceLinks.deleteLink(currentTask.id)
+                await serviceLinks.deleteLink(currentTask.id)
             } catch (error) {
                 console.log(error)
             }
