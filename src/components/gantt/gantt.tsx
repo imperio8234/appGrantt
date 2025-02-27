@@ -1,17 +1,19 @@
 import { gantt } from "dhtmlx-gantt";
 import "../../../node_modules/dhtmlx-gantt/codebase/dhtmlxgantt.css";
 import "./gantt.css";
-import React, { Component } from "react";
-import { Task, TaskSave } from "../../util/types";
+import  { Component } from "react";
+import { Task, taskgantt } from "../../util/types";
 
 interface GanttProps {
-    tasks: TaskSave;
+    tasks: any;
     zoom: string;
-    TaskUpdate: (task: Task) => void;
+    TaskUpdate: (task: taskgantt) => void;
 }
 
 export default class Gantt extends Component<GanttProps> {
-    constructor(props) {
+    ganttContainer: any;
+    dataProcessor: any;
+    constructor(props: GanttProps) {
         super(props);
         this.state = {
             updatedTasks: [] as Task[]
@@ -37,7 +39,7 @@ export default class Gantt extends Component<GanttProps> {
         }
     }
 
-    shouldComponentUpdate(nextProps) {
+    shouldComponentUpdate(nextProps : any) {
         if (nextProps.tasks !== this.props.tasks) {
             if (this.ganttContainer) {
                 gantt.clearAll();
@@ -90,7 +92,7 @@ export default class Gantt extends Component<GanttProps> {
         });
     }
 
-    setZoom(value) {
+    setZoom(value: any) {
         if (!gantt.$initialized) {
             this.initZoom();
         }
@@ -99,14 +101,15 @@ export default class Gantt extends Component<GanttProps> {
 
     initGanttDataProcessor() {
         this.dataProcessor = gantt.createDataProcessor((entityType, action, item, id) => {
-            return new Promise((resolve) => {
-                const updatedTask: Task = { entityType, action, item, id };
+            return new Promise<void>((resolve) => { // <- Aquí le decimos que es Promise<void>
+                const updatedTask: any = { entityType, action, item, id };
                 console.log("Task updated:", updatedTask);
                 this.props.TaskUpdate(updatedTask);
-                resolve();
+                resolve(); // Ahora TypeScript ya no se quejará
             });
         });
     }
+    
 
     componentWillUnmount() {
         if (this.dataProcessor) {

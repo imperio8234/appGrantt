@@ -1,6 +1,5 @@
 import { Layout, Menu, Dropdown, Avatar } from 'antd';
-import { UserOutlined, LogoutOutlined, MenuOutlined } from '@ant-design/icons';
-import { useState } from 'react';
+import { UserOutlined, LogoutOutlined } from '@ant-design/icons';
 import { useUser } from '../../../provider/userContex';
 
 const { Header } = Layout;
