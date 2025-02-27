@@ -11,6 +11,7 @@ export interface Task {
     item?: TaskData | LinkData
 }
 export interface TaskSave {
+        data: TaskSave;
     
         id: string | number;
         text: string;
