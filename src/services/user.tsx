@@ -11,7 +11,7 @@ export class UserServices {
      */
     async createUser(data?: user) {
         try {
-            const res = await backApi.post('/users', data);
+            const res = await backApi.post('/user', data);
             return res.data;
         } catch (error) {
             console.error('Error creating user', error);
@@ -27,7 +27,7 @@ export class UserServices {
      */
     async updateUser(id: string, data: user) {
         try {
-            const res = await backApi.put(`/users/${id}`, data);
+            const res = await backApi.put(`/user/${id}`, data);
             return res.data;
         } catch (error) {
             console.error('Error updating user', error);
@@ -41,7 +41,7 @@ export class UserServices {
      */
     async getUsers() {
         try {
-            const res = await backApi.get('/users');
+            const res = await backApi.get('/user');
             return res.data;
         } catch (error) {
             console.error('Error getting users', error);
@@ -56,7 +56,7 @@ export class UserServices {
      */
     async getUserById(id: string) {
         try {
-            const res = await backApi.get(`/users/${id}`);
+            const res = await backApi.get(`/user/${id}`);
             return res.data;
         } catch (error) {
             console.error('Error getting user by ID', error);
@@ -71,7 +71,7 @@ export class UserServices {
      */
     async deleteUser(id: string) {
         try {
-            const res = await backApi.delete(`/users/${id}`);
+            const res = await backApi.delete(`/user/${id}`);
             return res.data;
         } catch (error) {
             console.error('Error deleting user', error);
