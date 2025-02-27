@@ -47,3 +47,14 @@ export interface TaskData {
   start_date: Date;
   text: string;
 }
+
+export interface UserResponse {
+  name: string;
+  token: string;
+  idUser: string;
+}
+
+export interface user {
+  name: string;
+  password: string;
+}

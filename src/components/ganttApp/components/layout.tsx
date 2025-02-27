@@ -11,6 +11,7 @@ const LayoutGrantt = () => {
 
   const handleLogout = () => {
     logged({name:"", token: "", idUser: ""})
+    localStorage.removeItem('token')
   };
 
   const menu = (

@@ -39,9 +39,9 @@ export class LinkServices {
    * optener los links.
    * @returns Respuesta del backend con los links.
    */ 
-   async getLink () {
+   async getLink (id?: string) {
         try {
-            const res = await backApi.get(`/link`);
+            const res = await backApi.get(`/link/${id}`);
             return res.data;
           } catch (error) {
             console.error('Error geting link', error);
