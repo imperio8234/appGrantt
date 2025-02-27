@@ -33,13 +33,19 @@ function GanttApp() {
     const serviceLinks = new LinkServices();
     const { user } = useUser();
 
-    useEffect(() => {
-        if (!user?.token) {
-          setTasksItems({links: [], data: []})
-          return;        
-      }
-    }, [user])
+   const deleteData = () => {
+    setTasksItems({ data: [], links: [] })
+    console.log("se elimino")
+   }
 
+   useEffect(() => {
+    // Limpia el estado antes de cargar nuevos datos
+    setTasksItems({ data: [], links: [] });
+
+    // Carga los datos del nuevo usuario
+    getTasks();
+// eslint-disable-next-line react-hooks/exhaustive-deps
+}, [user?.idUser]);
 
     const getTasks = async () => {
         setLoading(true);
@@ -180,7 +186,7 @@ function GanttApp() {
     return (
         <>
             {contextHolder}
-            <LayoutGrantt />
+            <LayoutGrantt deleteData={deleteData} />
             <div className="zoom-bar">
                 <Toolbar
                     zoom={stateZoom}

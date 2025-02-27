@@ -1,15 +1,21 @@
 import { Layout, Menu, Dropdown, Avatar } from 'antd';
 import { UserOutlined, LogoutOutlined } from '@ant-design/icons';
 import { useUser } from '../../../provider/userContex';
+import React from 'react';
 
 const { Header } = Layout;
 
-const LayoutGrantt = () => {
+interface propsGrant {
+   deleteData: () => void
+}
+
+const LayoutGrantt: React.FC<propsGrant> = ({deleteData}) => {
     const {user, logged} = useUser();
 
 
   const handleLogout = () => {
     logged({name:"", token: "", idUser: ""})
+    deleteData();
     localStorage.removeItem('token')
   };
 
