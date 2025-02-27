@@ -33,15 +33,15 @@ const Login: React.FC<loginPprops> = ({ setUser }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center  bg-amber-50">
+    <div className="min-h-screen flex items-center justify-center flex-col md:flex-row bg-amber-50">
       {contextHolder}
-      <div className="bg-amber-50 text-gray-950 w-5/12 h-full flex items-center justify-center font-extrabold text-3xl p-4">
+      <div className="md:bg-amber-50 bg-gray-900 md:text-gray-950 text-white w-full md:w-5/12 h-full flex items-center justify-center font-extrabold text-3xl p-4">
         <p>
           <AnimatedUnderline text={"Gestiona tus proyectos de forma eficiente y visual.  Organiza tareas, subtareas, dependencias y plazos con total claridad. ¡Lleva tu productividad al siguiente nivel!"} />
 
         </p>
       </div>
-      <div className="w-7/12 flex items-center justify-center flex-col gap-3.5 text-1xl text-white bg-gray-900 h-full">
+      <div className="w-full md:w-7/12 flex items-center justify-center flex-col gap-3.5 text-1xl text-white bg-gray-900 h-full ">
         <p>conserva tu contraseña y usuario puedes acceder a tu informacion</p>
         <form
           onSubmit={handleSubmit}
