@@ -3,6 +3,7 @@ import { LinkData, Task, TaskSave } from '../../util/types';
 import Gantt from '../gantt/gantt';
 import Toolbar from '../gantt/Toolbar';
 import { TaskServices } from '../../services/taskServices';
+import { LinkServices } from '../../services/linkServices';
 
 
 export type zoomType = "Days" | "Hours" | 'Months';
@@ -19,12 +20,15 @@ function GanttApp() {
 
     // importacion de servicios
     const serviceTasks = new TaskServices();
+    const serviceLinks = new LinkServices();
 
     const getTasks = async() => {
         try {
+
+            const links = await serviceLinks.getLink();
             const tasks = await serviceTasks.getTask();
-            setTasksItems({data: tasks.data, links: []})
-            console.log("tasks", tasks.data)
+            
+            setTasksItems({data: tasks.data, links:links.data})
         } catch (error) {
             console.log(error)
         }
@@ -34,7 +38,6 @@ function GanttApp() {
         getTasks()
 
     }, [])
-
 
     const handleZoomChange = (zoom: zoomType) => {
         setStateZoom(zoom);
@@ -46,6 +49,8 @@ function GanttApp() {
                 ...tasksItems,
                 data: [...tasksItems.data, currentTask.item as TaskSave]
             });
+
+            // save database
              try {
                 const res = await serviceTasks.createTask(currentTask.item)
                 console.log("se guardaron los datos", res)
@@ -53,6 +58,7 @@ function GanttApp() {
                 console.log(error)
                 
              }
+             // update database
         } else if (currentTask.action === "update" && currentTask.entityType === "task") {
             const updatedData = tasksItems.data.map(task =>
                 task.id === currentTask.item?.id ? (currentTask.item as TaskSave) : task
@@ -62,17 +68,44 @@ function GanttApp() {
                 ...tasksItems,
                 data: updatedData
             });
+
+            // update task database
+               try {
+                const res = await serviceTasks.updateTask(currentTask.id, currentTask.item)
+                console.log("task update", res)
+               } catch (error) {
+                 console.log(error)
+               }
+            // delete database
         } else if (currentTask.action === "delete" && currentTask.entityType === "task") {
             const filteredData = tasksItems.data.filter(task => task.id !== currentTask.item?.id);
             setTasksItems({
                 ...tasksItems,
                 data: filteredData
             });
-        } else if (currentTask.action === "create" && currentTask.entityType === "link") {
+
+            try {
+                const res = await serviceTasks.deleteTask(currentTask.id)
+                console.log("task delete", res)
+            } catch (error) {
+                console.log(error)
+            }
+
+        } else if (currentTask.action === "create" && currentTask.entityType === "link") { // manejo de las relaciones o links
             setTasksItems({
                 ...tasksItems,
                 links: [...tasksItems.links, currentTask.item as LinkData]
             });
+             console.log("llego el link", currentTask)
+             // save database
+            try {
+                const res = await serviceLinks.createLink(currentTask.item)
+                console.log("link creado", res)
+            } catch (error) {
+                console.log(error)
+            }
+
+            // update link database
         } else if (currentTask.action === "update" && currentTask.entityType === "link") {
             const updatedLinks = tasksItems.links.map(link =>
                 link.id === currentTask.item?.id ? (currentTask.item as LinkData) : link
@@ -82,14 +115,32 @@ function GanttApp() {
                 ...tasksItems,
                 links: updatedLinks
             });
+
+            // update link database
+            try {
+                const res = await serviceLinks.updatelink(currentTask.id, currentTask.item)
+                console.log("link update", res)
+            } catch (error) {
+                console.log(error)
+            }
         } else if (currentTask.action === "delete" && currentTask.entityType === "link") {
             const filteredLinks = tasksItems.links.filter(link => link.id !== currentTask.item?.id);
             setTasksItems({
                 ...tasksItems,
                 links: filteredLinks
             });
+
+            // delete link tatabase
+            try {
+                const res = await serviceLinks.deleteLink(currentTask.id)
+                console.log("link delete", res)
+            } catch (error) {
+             console.log(error)   
+            }
         }
     };
+
+
     return (
         <>
             <div className="zoom-bar">
