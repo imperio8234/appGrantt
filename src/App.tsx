@@ -39,7 +39,7 @@ function App() {
       <div className=''>
         {contextHolder}
         {
-          user?.token?<GanttApp />:<Login setUser={login} />
+          user?.token ?<GanttApp />:<Login setUser={login} />
         }
       </div>
 
