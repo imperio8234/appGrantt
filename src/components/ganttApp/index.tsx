@@ -4,12 +4,19 @@ import Gantt from '../gantt/gantt';
 import Toolbar from '../gantt/Toolbar';
 import { TaskServices } from '../../services/taskServices';
 import { LinkServices } from '../../services/linkServices';
+import { LoadingOutlined } from '@ant-design/icons';
+import { Flex, Spin } from 'antd';
+import useNotification from '../../util/notify';
+import { useUser } from '../../provider/userContex';
+import LayoutGrantt from './components/layout';
+
 
 
 export type zoomType = "Days" | "Hours" | 'Months';
 
 function GanttApp() {
     const [stateZoom, setStateZoom] = useState<zoomType>("Days");
+    const [loading, setLoading] = useState<boolean>(true);
     const [tasksItems, setTasksItems] = useState<{
         data: TaskSave[],
         links: LinkData[];
@@ -18,19 +25,26 @@ function GanttApp() {
         links: []
     });
 
+    // notificaciones
+    const {notify, contextHolder} = useNotification();
+
     // importacion de servicios
     const serviceTasks = new TaskServices();
     const serviceLinks = new LinkServices();
-
+    const {user, logged} =useUser();
+ console.log(user)
     const getTasks = async() => {
+        setLoading(true);
         try {
 
             const links = await serviceLinks.getLink();
             const tasks = await serviceTasks.getTask();
             
             setTasksItems({data: tasks.data, links:links.data})
+            setLoading(false)
         } catch (error) {
             console.log(error)
+            setLoading(false);
         }
     }
    
@@ -53,6 +67,7 @@ function GanttApp() {
             // save database
              try {
                 const res = await serviceTasks.createTask(currentTask.item)
+                notify("tarea generada", "success")
                 console.log("se guardaron los datos", res)
              } catch (error) {
                 console.log(error)
@@ -83,7 +98,7 @@ function GanttApp() {
                 ...tasksItems,
                 data: filteredData
             });
-
+             notify("Datos eliminados", "info")
             try {
                 const res = await serviceTasks.deleteTask(currentTask.id)
                 console.log("task delete", res)
@@ -140,9 +155,14 @@ function GanttApp() {
         }
     };
 
-
+    if (loading) {
+        return  <Spin indicator={<LoadingOutlined spin />} size="large" />
+    }
+    
     return (
         <>
+        {contextHolder}
+                <LayoutGrantt />
             <div className="zoom-bar">
                 <Toolbar
                     zoom={stateZoom}
