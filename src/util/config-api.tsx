@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 
-const BACK_URL = "http://172.31.93.31:3000/api";
+const BACK_URL = "http://143.244.178.5:3000/api";
 
 export const backApi = axios.create({
     baseURL: BACK_URL,
