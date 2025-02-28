@@ -1,4 +1,4 @@
-name: Deploy React App
+name: Deploy
 
 on:
   push:
@@ -16,15 +16,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node.js 21
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-
-      - name: Reinstall Rollup
-        run: |
-          npm uninstall rollup
-          npm install rollup
+          node-version: 21 # Especifica la versión 21 de Node.js
 
       - name: Install dependencies
         run: npm ci
@@ -37,17 +32,19 @@ jobs:
             exit 1
           fi
 
+      - name: Install sshpass (for password-based SSH)
+        run: sudo apt-get install -y sshpass
+
       - name: Deploy to server
         if: success()
         env:
           HOST: ${{ secrets.HOST }}
           USER: ${{ secrets.USER }}
-          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
         run: |
-          echo "$SSH_KEY" > private_key.pem
-          chmod 600 private_key.pem
-          scp -i private_key.pem -r dist/* $USER@$HOST:/var/www/appGrantt/dist
-          ssh -i private_key.pem $USER@$HOST "sudo systemctl restart nginx"
-          rm private_key.pem
+          # Copiar los archivos al servidor usando sshpass
+          sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -r dist/* $USER@$HOST:/var/www/appGrantt/dist
 
+          # Reiniciar Nginx en el servidor usando sshpass
+          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $USER@$HOST "sudo systemctl restart nginx"
 
