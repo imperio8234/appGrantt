@@ -37,7 +37,7 @@ jobs:
         env:
           DO_PASSWORD: ${{ secrets.DO_PASSWORD }}
         run: |
-          sshpass -p "$DO_PASSWORD" rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./build/ root@137.184.40.158:/var/www/html
+          sshpass -p "$DO_PASSWORD" rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./dist/ root@137.184.40.158:/var/www/html
           sshpass -p "$DO_PASSWORD" ssh -o StrictHostKeyChecking=no root@137.184.40.158 << 'EOF'
             sudo systemctl restart nginx
           EOF
