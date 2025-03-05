@@ -21,6 +21,11 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+        
+      - name: Reinstall Rollup
+        run: |
+          npm uninstall rollup
+          npm install rollup --save-dev
 
       - name: Build project
         run: npm run build
