@@ -37,7 +37,7 @@ jobs:
 
       - name: Deploy to Production
         env:
-          DO_PASSWORD: ${{ secrets.DO_PASSWORD_PROD }}
+          DO_PASSWORD: ${{ secrets.DO_PASSWORD }}
         run: |
           sshpass -p "$DO_PASSWORD" rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./dist/ root@137.184.40.158:/var/www/html
           sshpass -p "$DO_PASSWORD" ssh -o StrictHostKeyChecking=no root@137.184.40.158 << 'EOF'
@@ -74,7 +74,7 @@ jobs:
 
       - name: Deploy to Development
         env:
-          DO_PASSWORD: ${{ secrets.DO_PASSWORD_DEV }}
+          DO_PASSWORD: ${{ secrets.DO_PASSWORD }}
         run: |
           sshpass -p "$DO_PASSWORD" rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./dist/ root@137.184.40.158:/var/www/dev
           sshpass -p "$DO_PASSWORD" ssh -o StrictHostKeyChecking=no root@137.184.40.158 << 'EOF'
