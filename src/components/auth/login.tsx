@@ -42,7 +42,7 @@ const Login: React.FC<loginPprops> = ({ setUser }) => {
         </p>
       </div>
       <div className="w-full md:w-7/12 flex items-center justify-center flex-col gap-3.5 text-1xl text-white bg-gray-900 h-full ">
-        <p>conserva tu contraseña y usuario puedes acceder a tu informacion</p>
+        <p>conserva tu contraseña y usuario puedes acceder a tu informacion esto es una prueba para dev</p>
         <form
           onSubmit={handleSubmit}
           className="bg-gray-800 p-8 rounded-2xl shadow-lg w-80"
@@ -78,7 +78,7 @@ const Login: React.FC<loginPprops> = ({ setUser }) => {
             type="submit"
             className="cursor-pointer w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition"
           >
-            Ingresar esto es una prueva para dev
+            Ingresar esto es una prueva para dev provando
           </button>
         </form>
       </div>
