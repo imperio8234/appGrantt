@@ -1,55 +1,39 @@
-name: Deploy
+name: Frontend CI & Deploy
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 21
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 21 # Especifica la versión 21 de Node.js
+          node-version: '21'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
-
-      - name: Reinstall Rollup
-        run: |
-          npm uninstall rollup
-          npm install rollup --save-dev
+        run: npm install
 
       - name: Build project
-        run: |
-          npm run build
-          if [ ! -d "dist" ] || [ -z "$(ls -A dist)" ]; then
-            echo "⚠️ Build failed or dist/ directory is empty. Skipping deployment."
-            exit 1
-          fi
-
-      - name: Install sshpass (for password-based SSH)
+        run: npm run build
+        
+      - name: Install sshpass
         run: sudo apt-get install -y sshpass
 
-      - name: Deploy to server
-        if: success()
+      - name: Deploy to DigitalOcean
         env:
-          HOST: ${{ secrets.HOST }}
-          USER: ${{ secrets.USER }}
-          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+          DO_PASSWORD: ${{ secrets.DO_PASSWORD }}
         run: |
-          # Copiar los archivos al servidor usando sshpass
-          sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -r dist/* $USER@$HOST:/var/www/appGrantt/dist
-
-          # Reiniciar Nginx en el servidor usando sshpass
-          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $USER@$HOST "sudo systemctl restart nginx"
+          sshpass -p "$DO_PASSWORD" rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./build/ root@137.184.40.158:/var/www/html
+          sshpass -p "$DO_PASSWORD" ssh -o StrictHostKeyChecking=no root@137.184.40.158 << 'EOF'
+            sudo systemctl restart nginx
+          EOF
 
