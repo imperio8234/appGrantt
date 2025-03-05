@@ -78,7 +78,7 @@ const Login: React.FC<loginPprops> = ({ setUser }) => {
             type="submit"
             className="cursor-pointer w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition"
           >
-            Ingresar
+            Ingresar esto es una prueva para dev
           </button>
         </form>
       </div>
